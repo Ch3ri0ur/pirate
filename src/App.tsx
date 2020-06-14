@@ -1,48 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 // import Layout from './components/Layout/Layout';
 // import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
 
 import { Layout, Menu } from 'antd';
 import { DesktopOutlined, PieChartOutlined, FileOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
 import UChart from './components/Chart/Chart';
+import { useDebouncedCallback } from 'use-debounce';
 
+import uPlot from 'uplot';
+import io from 'socket.io-client';
+import CustomSlider from './components/Slider/Slider';
+// import throttle from './util/throttle';
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
-// function getData() {
-//     return Math.random();
-// }
-
-const opts = {
+const opts: uPlot.Options = {
     title: 'Fixed length / sliding data slices',
-    width: 1600,
+    width: 800,
     height: 600,
     series: [
         {},
         {
-            label: 'CPU',
-            scale: '%',
-            value: (u, v) => (v == null ? '-' : v.toFixed(1) + '%'),
+            label: 'Distance',
+            scale: 'cm',
+            value: (u, v) => (v == null ? '-' : v.toFixed(1) + ' cm'),
             stroke: 'red',
         },
         {
-            label: 'RAM',
-            scale: '%',
-            value: (u, v) => (v == null ? '-' : v.toFixed(1) + '%'),
+            label: 'Distance/2',
+            scale: 'cm',
+            value: (u, v) => (v == null ? '-' : v.toFixed(1) + ' cm'),
             stroke: 'blue',
         },
         {
-            label: 'TCP Out',
-            scale: 'mb',
-            value: (u, v) => (v == null ? '-' : v.toFixed(2) + ' MB'),
+            label: 'Distance + 5',
+            scale: 'cm',
+            value: (u, v) => (v == null ? '-' : v.toFixed(2) + ' cm'),
             stroke: 'green',
+        },
+        {
+            label: 'Distance - 5',
+            scale: 'cm',
+            value: (u, v) => (v == null ? '-' : v.toFixed(2) + ' cm'),
+            stroke: 'yellow',
         },
     ],
     axes: [
         {},
         {
-            scale: '%',
-            values: (u, vals, space) => vals.map((v) => +v.toFixed(1) + '%'),
+            scale: 'cm',
+            values: (u, vals, space) => vals.map((v) => +v.toFixed(1) + ' cm'),
         },
         {
             side: 1,
@@ -53,54 +60,73 @@ const opts = {
     ],
 };
 
+const socket = io('http://raspberrypi:3000');
+
 const App: React.FC = () => {
     const [collapsed, setCollapsed] = useState(false);
-    const [count, setCount] = useState(0);
+    const [pValue, setPValue] = useState(0.5);
+    const [iValue, setIValue] = useState(0.5);
+    const [dValue, setDValue] = useState(0.5);
+    const [datar, setDatar] = useState<(number | null)[][]>([[], [], [], [], []]);
+    // const throttledSettings = useRef(throttle(, 1000));
+    // const [socket, setSocket] = useState<SocketIOClient.Socket>(null);
     // eslint-disable-next-line
-    const [data, setData] = useState([
-        [0, 1, 2, 3, 4, 5],
-        [0, 1, 2, 3, 4, 5],
-    ]);
-
-    const tick = () => {
-        setCount((county) => {
-            console.log(county);
-            return county + 1;
-        });
-    };
+    // const [data, setData] = useState<uPlot.AlignedData>([]);
+    // const socketRef = useRef<SocketIOClient.Socket>(io('http://raspberrypi:3000'));
+    // const [response, setResponse] = useState(false);
+    // const [endPoint, setEndPoint] = useState('http://raspberrypi:3000');
 
     useEffect(() => {
-        setData((dat) => {
-            if (dat) {
-                const firstLength = dat[0]?.y?.length;
-                if (!firstLength) {
-                    return dat;
-                }
-                const firsty = dat[0]?.y;
-                if (!firsty) {
-                    return dat;
-                }
-                const first: Float32Array = firsty as Float32Array;
-                const result = new Float32Array(firstLength);
-                const instertArray = [Math.sin((Math.PI / 90) * count)];
-                result.set(first.slice(instertArray.length));
-                result.set(instertArray, firstLength - instertArray.length);
-                return [{ ...dat[0], y: result }];
-            } else {
-                return dat;
-            }
+        socket.on('connect', function () {
+            console.log('connected');
         });
-    }, [count]);
+        socket.on('measurements', function (data: string) {
+            // console.log(data);
+            const splitData = data.split(',').map((elm) => parseFloat(elm));
+            // console.log(splitData);
 
-    useEffect(() => {
-        const timerID = setInterval(() => tick(), 100);
+            setDatar((dat) => {
+                const t = dat.map((elm, idx) => {
+                    let dataToAdd: null | number = splitData[idx];
+                    if (idx > 0) {
+                        if (dataToAdd > 500) {
+                            dataToAdd = null;
+                        }
+                    } else {
+                        dataToAdd = splitData[idx] / 1000;
+                    }
+                    const ely = elm.slice(-100);
 
-        return () => {
-            console.log('stopping timer');
-            clearInterval(timerID);
-        };
-        // eslint-disable-next-line
+                    return [...ely, dataToAdd];
+                });
+                // console.log(t);
+                return t;
+            });
+            // console.log(datar);
+        });
+        socket.on('disconnect', function () {
+            console.log('disconnected');
+        });
+
+        // return () => {
+        //     socket.disconnect();
+        // };
     }, []);
+
+    const [debouncedFunction, cancel] = useDebouncedCallback(
+        // to memoize debouncedFunction we use useCallback hook.
+        // In this case all linters work correctly
+        useCallback((pValue1: number, iValue1: number, dValue1: number) => {
+            socket.emit('settings', [pValue1, iValue1, dValue1]);
+        }, []),
+        700,
+        // The maximum time func is allowed to be delayed before it's invoked:
+        { maxWait: 1000 },
+    );
+
+    useEffect(() => {
+        debouncedFunction(pValue, iValue, dValue);
+    }, [pValue, iValue, dValue]);
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
@@ -135,8 +161,11 @@ const App: React.FC = () => {
                         <Breadcrumb.Item>Bill</Breadcrumb.Item>
                     </Breadcrumb> */}
                     <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
-                        <UChart opts={opts} data={data} />
+                        {datar ? <UChart opts={opts} data={datar} /> : null}
                     </div>
+                    <CustomSlider value={pValue} setValue={setPValue} min={0} max={10} name="P-Value"></CustomSlider>
+                    <CustomSlider value={iValue} setValue={setIValue} min={0} max={10} name="I-Value"></CustomSlider>
+                    <CustomSlider value={dValue} setValue={setDValue} min={0} max={10} name="D-Value"></CustomSlider>
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
             </Layout>

@@ -13,23 +13,36 @@ const UChart: React.FC<Prop> = (props: Prop) => {
     // let chart: HTMLCanvasElement;
 
     const canvasMain = useRef<HTMLDivElement>(null);
-    let uplot1: uPlot;
+    const refy = useRef<uPlot>();
     useEffect(() => {
         if (canvasMain.current) {
-            uplot1 = new uPlot(props.opts, props.data, canvasMain.current);
+            if (props.data.length !== 0) {
+                refy.current = new uPlot(props.opts, props.data, canvasMain.current);
+                console.log(refy.current);
+            }
+        }
+        return () => {
+            refy.current?.destroy();
+        };
+    }, [props.opts]);
+    useEffect(() => {
+        if (canvasMain.current) {
+            if (props.data.length !== 0) {
+                refy.current?.setData(props.data);
+            }
         }
         // return (test) => {
         //     test.destroy();
         // };
-    }, []);
+    }, [props.data]);
 
     useEffect(() => {
-        uplot1.setData(props.data);
+        refy?.current?.setData(props.data);
         return () => {
             // renderPlot = () => {};
             // cancelAnimationFrame(id);
         };
-    }, [props.data]);
+    }, [props.data, refy]);
 
     const canvasStyle = {
         width: '100%',
