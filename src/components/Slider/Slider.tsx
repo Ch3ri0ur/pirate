@@ -6,7 +6,7 @@ interface Props {
     min: number;
     max: number;
     name: string;
-    setValue: React.Dispatch<React.SetStateAction<number>>;
+    // setValue: React.Dispatch<React.SetStateAction<number>>;
     children?: React.ReactChild;
 }
 
@@ -16,7 +16,7 @@ const CustomSlider: React.FC<Props> = (props: Props) => {
         if (!(value as number)) {
             return;
         }
-        props.setValue(Number(value));
+        // props.setValue(Number(value));
         setInputValue(Number(value));
     };
     const [inputMin, setInputMin] = useState<number>(props.min);
