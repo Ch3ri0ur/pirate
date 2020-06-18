@@ -46,7 +46,7 @@ const UChart: React.FC<Prop> = (props: Prop) => {
 
     const canvasStyle = {
         width: '100%',
-        height: '70vh',
+        // height: '70vh',
     };
 
     return (
