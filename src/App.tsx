@@ -161,7 +161,7 @@ const App: React.FC = () => {
                         <Breadcrumb.Item>Bill</Breadcrumb.Item>
                     </Breadcrumb> */}
                     <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
-                        {datar ? <UChart opts={opts} data={datar} /> : null}
+                        {datar ? <UChart opts={opts} data={datar} /> : <p>Sorry no data found.</p>}
                     </div>
                     <CustomSlider value={pValue} setValue={setPValue} min={0} max={10} name="P-Value"></CustomSlider>
                     <CustomSlider value={iValue} setValue={setIValue} min={0} max={10} name="I-Value"></CustomSlider>

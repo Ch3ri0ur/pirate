@@ -25,23 +25,19 @@ const UChart: React.FC<Prop> = (props: Prop) => {
             refy.current?.destroy();
         };
     }, [props.opts]);
-    useEffect(() => {
-        if (canvasMain.current) {
-            if (props.data.length !== 0) {
-                refy.current?.setData(props.data);
-            }
-        }
-        // return (test) => {
-        //     test.destroy();
-        // };
-    }, [props.data]);
+    // useEffect(() => {
+    //     if (canvasMain.current) {
+    //         if (props.data.length !== 0) {
+    //             refy.current?.setData(props.data);
+    //         }
+    //     }
+    //     // return (test) => {
+    //     //     test.destroy();
+    //     // };
+    // }, [props.data]);
 
     useEffect(() => {
         refy?.current?.setData(props.data);
-        return () => {
-            // renderPlot = () => {};
-            // cancelAnimationFrame(id);
-        };
     }, [props.data, refy]);
 
     const canvasStyle = {
