@@ -23,18 +23,9 @@ const UChart: React.FC<Prop> = (props: Prop) => {
         }
         return () => {
             refy.current?.destroy();
+            console.log('DESTROYED CHART!!1!');
         };
-    }, [props.opts]);
-    // useEffect(() => {
-    //     if (canvasMain.current) {
-    //         if (props.data.length !== 0) {
-    //             refy.current?.setData(props.data);
-    //         }
-    //     }
-    //     // return (test) => {
-    //     //     test.destroy();
-    //     // };
-    // }, [props.data]);
+    }, [props.opts, refy]);
 
     useEffect(() => {
         refy?.current?.setData(props.data);
@@ -45,11 +36,7 @@ const UChart: React.FC<Prop> = (props: Prop) => {
         // height: '70vh',
     };
 
-    return (
-        <div>
-            <div style={canvasStyle} ref={canvasMain} />
-        </div>
-    );
+    return <div style={canvasStyle} ref={canvasMain} />;
 };
 
 export default UChart;

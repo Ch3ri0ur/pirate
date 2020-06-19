@@ -1,8 +1,11 @@
 import { Slider, InputNumber, Row, Col, Divider } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { createStore, useStore } from 'react-hookstore';
+import { useDebouncedCallback } from 'use-debounce';
+import axios from 'axios';
 
 interface Props {
-    value: number;
+    startvalue?: number;
     min: number;
     max: number;
     name: string;
@@ -11,79 +14,76 @@ interface Props {
 }
 
 const CustomSlider: React.FC<Props> = (props: Props) => {
-    const [inputValue, setInputValue] = useState<number>(props.value);
-    const onChange = (value: number | string | undefined | [number, number]) => {
-        if (!(value as number)) {
-            return;
-        }
-        // props.setValue(Number(value));
-        setInputValue(Number(value));
-    };
-    const [inputMin, setInputMin] = useState<number>(props.min);
-    const onChangeMin = (value: number | string | undefined) => {
-        if (isNaN(value as number)) {
-            return;
-        }
-        setInputMin(Number(value));
-    };
-    const [inputMax, setInputMax] = useState<number>(props.max);
-    const onChangeMax = (value: number | string | undefined) => {
-        if (isNaN(value as number)) {
-            return;
-        }
-        setInputMax(Number(value));
-    };
+    // const [inputValue, setInputValue] = useState<number>(props.value);
+    // const onChange = (value: number | string | undefined | [number, number]) => {
+    //     if (!(value as number)) {
+    //         return;
+    //     }
+    //     // props.setValue(Number(value));
+    const [slidy, setSlidy] = useState(0);
+    const targetUrl = useStore<string>('ProjectTargetURL')[0];
+
+    const [debouncedFunction, cancel] = useDebouncedCallback(
+        // to memoize debouncedFunction we use useCallback hook.
+        // In this case all linters work correctly
+        useCallback((value: number) => {
+            const body = {
+                name: props.name,
+                value: value,
+            };
+            // axios
+            //     .post('http://raspberrypi:3000/ctrl', {
+            //         body,
+            //         config,
+            //     })
+            //     .then(function (response) {
+            //         console.log(response);
+            //     })
+            //     .catch(function (error) {
+            //         console.log(error);
+            //     });
+
+            fetch(targetUrl + '/ctrl', {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+                body: JSON.stringify(body),
+            })
+                .then((response) => {
+                    return response.status;
+                })
+                .then((result) => {
+                    console.log('Success:', result);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }, []),
+
+        700,
+        // The maximum time func is allowed to be delayed before it's invoked:
+        { maxWait: 1000 },
+    );
+
+    useEffect(() => {
+        debouncedFunction(slidy);
+    }, [slidy]);
 
     return (
         <>
-            <Divider orientation="left">{props.name}</Divider>
-            <Row>
-                <Col span={3}>
-                    <p>Min:</p>
-                </Col>
-                <Col span={3}>
-                    <InputNumber
-                        min={0}
-                        max={inputMax}
-                        style={{ margin: '0 16px' }}
-                        step={0.01}
-                        value={inputMin}
-                        onChange={onChangeMin}
-                    />
-                </Col>
-                <Col span={3}>
-                    <p>Value:</p>
-                </Col>
-                <Col span={3}>
-                    <InputNumber
-                        min={inputMin}
-                        max={inputMax}
-                        style={{ margin: '0 16px' }}
-                        step={0.01}
-                        value={inputValue}
-                        onChange={onChange}
-                    />
-                </Col>
-                <Col span={3}>
-                    <p>Max:</p>
-                </Col>
-                <Col span={3}>
-                    <InputNumber
-                        min={inputMin}
-                        max={100000}
-                        style={{ margin: '0 16px' }}
-                        step={0.01}
-                        value={inputMax}
-                        onChange={onChangeMax}
-                    />
-                </Col>
-            </Row>
-
-            <Row>
-                <Col span={18}>
-                    <Slider min={inputMin} max={inputMax} onChange={onChange} value={inputValue} step={0.01} />
-                </Col>
-            </Row>
+            <Slider
+                min={0}
+                max={100}
+                onChange={(v) => {
+                    if (typeof v === 'number') {
+                        setSlidy(v);
+                    }
+                }}
+                value={slidy}
+                step={0.01}
+            />
         </>
     );
 };

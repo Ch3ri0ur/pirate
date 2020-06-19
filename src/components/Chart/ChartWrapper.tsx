@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import UChart from './Chart';
 import uPlot from 'uplot';
+import { createStore, useStore } from 'react-hookstore';
 
 const opts: uPlot.Options = {
     title: 'Fixed length / sliding data slices',
@@ -54,16 +55,17 @@ interface Props {
 
 const ChartWrapper: React.FC<Props> = (props: Props) => {
     const [datar, setDatar] = useState<(number | null)[][]>([[], [], [], [], []]);
+    const targetUrl = useStore<string>('ProjectTargetURL')[0];
 
     useEffect(() => {
         console.log('I WAS IN THE USEEFFECT');
-        const eventSource = new EventSource('http://raspberrypi:3000/stream');
+        const eventSource = new EventSource(targetUrl + '/stream');
         console.log(eventSource);
         eventSource.addEventListener('message', function eventy(e) {
             const data = JSON.parse(e.data);
             // console.log(data);
             const splitData = data.split(',').map((elm: any) => parseFloat(elm));
-            console.log(splitData);
+            // console.log(splitData);
 
             setDatar(function doit(dat) {
                 const t = dat.map((elm, idx) => {

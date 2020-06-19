@@ -6,9 +6,11 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import MemoSider from './components/UI/Sider/MySider';
 import MyContent from './containers/MyContent';
 // import throttle from './util/throttle';
+import { createStore, useStore } from 'react-hookstore';
 import { Layout, Menu } from 'antd';
 const { Header, Content, Footer, Sider } = Layout;
 
+createStore('ProjectTargetURL', 'http://raspberrypi:3000');
 // const socket = io('http://raspberrypi:3000');
 
 const App: React.FC = () => {
