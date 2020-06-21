@@ -10,7 +10,7 @@ import { createStore, useStore } from 'react-hookstore';
 import { Layout, Menu } from 'antd';
 const { Header, Content, Footer, Sider } = Layout;
 
-createStore('ProjectTargetURL', 'http://raspberrypi:3000');
+createStore('ProjectTargetURL', 'https://wappler.me/project1');
 // const socket = io('http://raspberrypi:3000');
 
 const App: React.FC = () => {
@@ -20,7 +20,7 @@ const App: React.FC = () => {
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            <MemoSider></MemoSider>
+            {/* <MemoSider></MemoSider> */}
             <Layout className="site-layout">
                 <Header className="site-layout-background" style={{ padding: 0 }}>
                     <h3 style={{ color: 'white', margin: ' 0 20px ' }}>This is the first Project</h3>
