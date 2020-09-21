@@ -66,4 +66,8 @@ const UChart: React.FC<Prop> = (props: Prop) => {
     return <div style={canvasStyle} ref={canvasMain} />;
 };
 
+// function propsAreEqual(prev: Readonly<React.PropsWithChildren<Prop>>, next: Readonly<React.PropsWithChildren<Prop>>) {
+//     return prev.opts === next.opts;
+// }
+
 export default UChart;

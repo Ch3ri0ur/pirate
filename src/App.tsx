@@ -10,7 +10,8 @@ import { createStore, useStore } from 'react-hookstore';
 import { Layout, Menu } from 'antd';
 const { Header, Content, Footer, Sider } = Layout;
 
-createStore('ProjectTargetURL', 'https://wappler.me/project1');
+// createStore('ProjectTargetURL', 'https://wappler.me/project1');
+createStore('ProjectTargetURL', 'http://raspberrypi:3000');
 // const socket = io('http://raspberrypi:3000');
 
 const App: React.FC = () => {
@@ -26,7 +27,7 @@ const App: React.FC = () => {
                     <h3 style={{ color: 'white', margin: ' 0 20px ' }}>This is the first Project</h3>
                 </Header>
                 <MyContent></MyContent>
-                <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+                <Footer style={{ textAlign: 'center' }}>This is a very nice Footer</Footer>
             </Layout>
         </Layout>
     );

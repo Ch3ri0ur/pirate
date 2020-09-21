@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { Layout, Menu } from 'antd';
 import CustomSlider from '../components/Slider/MySliderWrapper';
-import ChartWrapper from '../components/Chart/ChartWrapper';
+import ChartCombo from '../components/Chart/ChartCombo';
+import SliderInput from '../components/Slider/SliderInput';
+import VideoStream from '../components/Janus/VideoStream';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -29,10 +31,18 @@ const MyContent: React.FC<Props> = (props: Props) => {
         <Breadcrumb.Item>Bill</Breadcrumb.Item>
         </Breadcrumb> <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}> */}
 
-            {true ? <ChartWrapper /> : <p>Sorry no data found.</p>}
+            {true ? <ChartCombo /> : <p>Sorry no data found.</p>}
+            <VideoStream></VideoStream>
             <CustomSlider min={0} max={10} name="P-Value"></CustomSlider>
             <CustomSlider min={0} max={10} name="I-Value"></CustomSlider>
             <CustomSlider min={0} max={10} name="D-Value"></CustomSlider>
+            <SliderInput
+                disabled={false}
+                readOnly={false}
+                min={0}
+                max={100}
+                onChange={(e) => console.log(e.value)}
+            ></SliderInput>
         </Content>
     );
 };

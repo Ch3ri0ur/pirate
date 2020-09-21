@@ -14,24 +14,28 @@ const opts: uPlot.Options = {
             scale: 'cm',
             value: (u, v) => (v == null ? '-' : v.toFixed(1) + ' cm'),
             stroke: 'red',
+            width: 1 / devicePixelRatio,
         },
         {
             label: 'Distance/2',
             scale: 'cm',
             value: (u, v) => (v == null ? '-' : v.toFixed(1) + ' cm'),
             stroke: 'blue',
+            width: 1 / devicePixelRatio,
         },
         {
             label: 'Distance + 5',
             scale: 'cm',
             value: (u, v) => (v == null ? '-' : v.toFixed(2) + ' cm'),
             stroke: 'green',
+            width: 1 / devicePixelRatio,
         },
         {
             label: 'Distance - 5',
             scale: 'cm',
             value: (u, v) => (v == null ? '-' : v.toFixed(2) + ' cm'),
             stroke: 'yellow',
+            width: 1 / devicePixelRatio,
         },
     ],
     axes: [
@@ -40,12 +44,12 @@ const opts: uPlot.Options = {
             scale: 'cm',
             values: (u, vals, space) => vals.map((v) => +v.toFixed(1) + ' cm'),
         },
-        {
-            side: 1,
-            scale: 'mb',
-            values: (u, vals, space) => vals.map((v) => +v.toFixed(2) + ' MB'),
-            grid: { show: false },
-        },
+        // {
+        //     side: 1,
+        //     scale: 'mb',
+        //     values: (u, vals, space) => vals.map((v) => +v.toFixed(2) + ' MB'),
+        //     grid: { show: false },
+        // },
     ],
 };
 

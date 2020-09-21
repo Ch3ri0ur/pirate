@@ -2,7 +2,6 @@ import { Slider, InputNumber, Row, Col, Divider } from 'antd';
 import React, { useState, useCallback, useEffect } from 'react';
 import { createStore, useStore } from 'react-hookstore';
 import { useDebouncedCallback } from 'use-debounce';
-import axios from 'axios';
 
 interface Props {
     startvalue?: number;
@@ -76,7 +75,7 @@ const CustomSlider: React.FC<Props> = (props: Props) => {
             <Slider
                 min={0}
                 max={100}
-                onChange={(v) => {
+                onChange={(v: number) => {
                     if (typeof v === 'number') {
                         setSlidy(v);
                     }
