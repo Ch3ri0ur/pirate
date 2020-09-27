@@ -10,6 +10,7 @@ const opts: uPlot.Options = {
     series: [
         {},
         {
+            show: true,
             label: 'Distance',
             scale: 'cm',
             value: (u, v) => (v == null ? '-' : v.toFixed(1) + ' cm'),

@@ -5,6 +5,7 @@ import CustomSlider from '../components/Slider/MySliderWrapper';
 import ChartCombo from '../components/Chart/ChartCombo';
 import SliderInput from '../components/Slider/SliderInput';
 import VideoStream from '../components/Janus/VideoStream';
+import useFetch from '../util/useFetch';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -24,16 +25,15 @@ const MyContent: React.FC<Props> = (props: Props) => {
     // const [response, setResponse] = useState(false);
     // const [endPoint, setEndPoint] = useState('http://raspberrypi:3000');
 
+    const { data, loading, error } = useFetch({ url: 'http://localhost:3000/getconfig' });
+    console.log(data);
+    console.log(loading);
+    console.log(error);
     return (
         <Content style={{ margin: '0 16px' }}>
-            {/* <Breadcrumb style={{ margin: '16px 0' }}>
-        <Breadcrumb.Item>User</Breadcrumb.Item>
-        <Breadcrumb.Item>Bill</Breadcrumb.Item>
-        </Breadcrumb> <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}> */}
-
-            {true ? <ChartCombo /> : <p>Sorry no data found.</p>}
+            {/* {true ? <ChartCombo /> : <p>Sorry no data found.</p>} */}
             <VideoStream></VideoStream>
-            <CustomSlider min={0} max={10} name="P-Value"></CustomSlider>
+            {/* <CustomSlider min={0} max={10} name="P-Value"></CustomSlider>
             <CustomSlider min={0} max={10} name="I-Value"></CustomSlider>
             <CustomSlider min={0} max={10} name="D-Value"></CustomSlider>
             <SliderInput
@@ -42,7 +42,7 @@ const MyContent: React.FC<Props> = (props: Props) => {
                 min={0}
                 max={100}
                 onChange={(e) => console.log(e.value)}
-            ></SliderInput>
+            ></SliderInput> */}
         </Content>
     );
 };

@@ -21,22 +21,28 @@ const opts: uPlot.Options = {
             stroke: 'red',
         },
         {
-            label: 'Distance/2',
+            label: 'P',
             scale: 'cm',
-            value: (u, v) => (v == null ? '-' : v.toFixed(1) + ' cm'),
+            value: (u, v) => (v == null ? '-' : v.toFixed(2) + ' cm'),
             stroke: 'blue',
         },
         {
-            label: 'Distance + 5',
+            label: 'I',
             scale: 'cm',
             value: (u, v) => (v == null ? '-' : v.toFixed(2) + ' cm'),
             stroke: 'green',
         },
         {
-            label: 'Distance - 5',
+            label: 'D',
             scale: 'cm',
             value: (u, v) => (v == null ? '-' : v.toFixed(2) + ' cm'),
             stroke: 'yellow',
+        },
+        {
+            label: 'Control',
+            scale: 'cm',
+            value: (u, v) => (v == null ? '-' : v.toFixed(2) + ' cm'),
+            stroke: 'cyan',
         },
     ],
     axes: [

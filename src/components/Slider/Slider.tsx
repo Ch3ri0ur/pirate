@@ -30,17 +30,6 @@ const CustomSlider: React.FC<Props> = (props: Props) => {
                 name: props.name,
                 value: value,
             };
-            // axios
-            //     .post('http://raspberrypi:3000/ctrl', {
-            //         body,
-            //         config,
-            //     })
-            //     .then(function (response) {
-            //         console.log(response);
-            //     })
-            //     .catch(function (error) {
-            //         console.log(error);
-            //     });
 
             fetch(targetUrl + '/ctrl', {
                 method: 'POST', // or 'PUT'
