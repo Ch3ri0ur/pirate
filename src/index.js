@@ -8,6 +8,6 @@ import App from './App';
 
 // import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<App appTitle="Person Manager" />, document.getElementById('root'));
+ReactDOM.render(<App appTitle="Pirate Client" />, document.getElementById('root'));
 
 // registerServiceWorker();

@@ -60,7 +60,24 @@ const opts: uPlot.Options = {
     ],
 };
 
+type stream_item = {
+    [ids: string]: number | string;
+};
+
+export type clientsend_config_type = {
+    [ids: string]: { name: string; type: string };
+};
+export type arduinosend_config_type = {
+    [ids: string]: { name: string; type: string; default: number; max: number; min: number };
+};
+
+export type pirateConfig = {
+    clientsend_config: clientsend_config_type;
+    arduinosend_config: arduinosend_config_type;
+};
+
 interface Props {
+    config: pirateConfig | undefined;
     children?: React.ReactChild;
 }
 
@@ -70,16 +87,44 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
     const targetUrl = useStore<string>('ProjectTargetURL')[0];
     const referenceToCanvasElement = useRef<HTMLDivElement>(null);
     const referenceToPlot = useRef<uPlot>();
+
     useEffect(() => {
+        console.log('configuseEffect');
+        const series = [{}];
+        const chartDataSkeleton: [(number | null)[]] = [[0]];
+        if (props.config) {
+            for (const [id, value] of Object.entries(props.config?.clientsend_config)) {
+                series.push({
+                    label: value.name,
+                    scale: 'cm',
+                    spanGaps: true,
+                    value: (u: any, v: any) => (v == null ? '-' : v.toFixed(1) + ' cm'),
+                    stroke: 'red',
+                });
+                chartDataSkeleton.push([null]);
+            }
+            globalChartData = chartDataSkeleton;
+            const tempOpts: uPlot.Options = Object.assign(opts);
+            tempOpts.series = series;
+            //globalChartData
+        }
+        return () => {};
+    }, [props.config]);
+
+    useEffect(() => {
+        console.log('element build use effect');
         if (referenceToCanvasElement.current) {
             if (globalChartData.length !== 0) {
+                console.log('building uplot with ');
+                console.log(opts);
+                console.log(globalChartData);
                 referenceToPlot.current = new uPlot(opts, globalChartData, referenceToCanvasElement.current);
                 console.log(referenceToPlot.current);
             }
         }
         return () => {
-            referenceToPlot.current?.destroy();
             console.log('DESTROYED CHART!!1!');
+            referenceToPlot.current?.destroy();
         };
     }, [opts, referenceToPlot]);
 
@@ -119,24 +164,60 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
         console.log(eventSource);
         eventSource.addEventListener('message', function eventy(e) {
             const data = JSON.parse(e.data);
-            // console.log(data);
-            const splitData = data.split(',').map((elm: any) => parseFloat(elm));
-            // console.log(splitData);
-
-            const t = globalChartData.map((elm, idx) => {
-                let dataToAdd: null | number = splitData[idx];
-                if (idx > 0) {
-                    if (dataToAdd !== null && dataToAdd > 500) {
-                        dataToAdd = null;
+            console.log(data);
+            if (globalChartData[0][0] === 0) {
+                const chartDataSkeleton: [number[]] = [[]];
+                if (props.config) {
+                    for (const [id, value] of Object.entries(props.config?.clientsend_config)) {
+                        chartDataSkeleton.push([]);
                     }
-                } else {
-                    dataToAdd = splitData[idx] / 1000;
                 }
-                const ely = elm.slice(-100);
-                return [...ely, dataToAdd];
-            });
-            referenceToPlot?.current?.setData(t);
-            globalChartData = t;
+                globalChartData = chartDataSkeleton;
+            }
+
+            for (const [ts, dat] of Object.entries<stream_item>(data)) {
+                globalChartData[0].push(parseInt(ts) / 1000);
+                console.log(dat);
+
+                if (props.config?.clientsend_config && dat) {
+                    for (const id in Object.keys(props.config?.clientsend_config)) {
+                        console.log(id);
+                        const sid = String(id);
+                        if (typeof dat === 'object' && dat) {
+                            if (sid in dat) {
+                                const value = dat[sid];
+                                if (typeof value === 'number') {
+                                    if (value < 50) {
+                                        globalChartData[Number(id) + 1].push(value);
+                                    } else {
+                                        globalChartData[Number(id) + 1].push(null);
+                                    }
+                                } else {
+                                    globalChartData[Number(id) + 1].push(null);
+                                }
+                            } else {
+                                globalChartData[Number(id) + 1].push(null);
+                            }
+                        }
+                    }
+                }
+            }
+            referenceToPlot?.current?.setData(globalChartData);
+
+            // const t = globalChartData.map((elm, idx) => {
+            //     let dataToAdd: null | number = splitData[idx];
+            //     if (idx > 0) {
+            //         if (dataToAdd !== null && dataToAdd > 500) {
+            //             dataToAdd = null;
+            //         }
+            //     } else {
+            //         dataToAdd = splitData[idx] / 1000;
+            //     }
+            //     const ely = elm.slice(-100);
+            //     return [...ely, dataToAdd];
+            // });
+            // referenceToPlot?.current?.setData(t);
+            // globalChartData = t;
 
             // console.log(datar);
         });

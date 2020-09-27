@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { Layout, Menu } from 'antd';
 import CustomSlider from '../components/Slider/MySliderWrapper';
-import ChartCombo from '../components/Chart/ChartCombo';
+import ChartCombo, { pirateConfig } from '../components/Chart/ChartCombo';
 import SliderInput from '../components/Slider/SliderInput';
 import VideoStream from '../components/Janus/VideoStream';
 import useFetch from '../util/useFetch';
@@ -25,13 +25,15 @@ const MyContent: React.FC<Props> = (props: Props) => {
     // const [response, setResponse] = useState(false);
     // const [endPoint, setEndPoint] = useState('http://raspberrypi:3000');
 
-    const { data, loading, error } = useFetch({ url: 'http://localhost:3000/getconfig' });
+    const { data, loading, error } = useFetch<pirateConfig>({ url: 'https://wappler.me/getconfig' });
+
     console.log(data);
     console.log(loading);
     console.log(error);
+
     return (
         <Content style={{ margin: '0 16px' }}>
-            {/* {true ? <ChartCombo /> : <p>Sorry no data found.</p>} */}
+            {loading ? <p>Loading</p> : <ChartCombo config={data} />}
             <VideoStream></VideoStream>
             {/* <CustomSlider min={0} max={10} name="P-Value"></CustomSlider>
             <CustomSlider min={0} max={10} name="I-Value"></CustomSlider>

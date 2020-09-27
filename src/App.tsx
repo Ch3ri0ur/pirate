@@ -11,7 +11,7 @@ import { Layout, Menu } from 'antd';
 const { Header, Content, Footer, Sider } = Layout;
 
 // createStore('ProjectTargetURL', 'https://wappler.me/project1');
-createStore('ProjectTargetURL', 'http://raspberrypi:3000');
+createStore('ProjectTargetURL', 'https://wappler.me');
 // const socket = io('http://raspberrypi:3000');
 
 const App: React.FC = () => {
