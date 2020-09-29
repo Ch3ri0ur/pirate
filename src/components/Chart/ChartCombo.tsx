@@ -8,7 +8,7 @@ const canvasStyle = {
     justifyContent: 'center',
 };
 
-const opts: uPlot.Options = {
+let opts: uPlot.Options = {
     title: 'Fixed length / sliding data slices',
     width: 800,
     height: 600,
@@ -81,40 +81,76 @@ interface Props {
     children?: React.ReactChild;
 }
 
-let globalChartData: (null | number)[][] = [[0], [0], [0], [0], [0]];
+let globalChartData: (null | number)[][]; // = [[0], [0], [0], [0], [0]];
+
+let chartDataMaxPoints = 100;
 
 const ChartCombo: React.FC<Props> = (props: Props) => {
     const targetUrl = useStore<string>('ProjectTargetURL')[0];
+    const [chartDataMaxPointsRef, setChartDataMaxPoints] = useStore<number>('chartDataMaxPoints');
+    const [graphShowList, setGraphShowList] = useStore<string[]>('graphShowList');
     const referenceToCanvasElement = useRef<HTMLDivElement>(null);
     const referenceToPlot = useRef<uPlot>();
 
     useEffect(() => {
+        chartDataMaxPoints = chartDataMaxPointsRef;
+        console.log('changing global');
+    }, [chartDataMaxPointsRef]);
+    console.log('this is me: ', chartDataMaxPoints);
+    useEffect(() => {
         console.log('configuseEffect');
         const series = [{}];
         const chartDataSkeleton: [(number | null)[]] = [[0]];
+        const showList: string[] = [];
         if (props.config) {
             for (const [id, value] of Object.entries(props.config?.clientsend_config)) {
                 series.push({
                     label: value.name,
+                    show: true,
                     scale: 'cm',
                     spanGaps: true,
                     value: (u: any, v: any) => (v == null ? '-' : v.toFixed(1) + ' cm'),
                     stroke: 'red',
                 });
-                chartDataSkeleton.push([null]);
+                chartDataSkeleton.push([0]);
+                showList.push(value.name);
             }
+            setGraphShowList(showList);
             globalChartData = chartDataSkeleton;
-            const tempOpts: uPlot.Options = Object.assign(opts);
+            const tempOpts: uPlot.Options = Object.assign(opts); // not sure if copy is deep or only refs are copied
             tempOpts.series = series;
+            opts = tempOpts;
             //globalChartData
         }
         return () => {};
     }, [props.config]);
 
     useEffect(() => {
+        opts.series.forEach((v, k) => {
+            if (v?.label) {
+                console.log('showing series');
+                console.log(k, v, referenceToPlot.current, graphShowList);
+                if (graphShowList.includes(v.label)) {
+                    if (referenceToPlot.current) {
+                        // console.log('showing');
+                        referenceToPlot.current.setSeries(k, { show: true });
+                    }
+                } else {
+                    if (referenceToPlot.current) {
+                        // console.log('hiding');
+                        referenceToPlot.current.setSeries(k, { show: false });
+                    }
+                }
+            }
+        });
+
+        return () => {};
+    }, [graphShowList]);
+
+    useEffect(() => {
         console.log('element build use effect');
         if (referenceToCanvasElement.current) {
-            if (globalChartData.length !== 0) {
+            if (opts && globalChartData) {
                 console.log('building uplot with ');
                 console.log(opts);
                 console.log(globalChartData);
@@ -154,17 +190,13 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
         };
     }, [referenceToCanvasElement]);
 
-    // useEffect(() => {
-    //     referenceToPlot?.current?.setData(props.data);
-    // }, [props.data, referenceToPlot]);
-
     useEffect(() => {
         console.log('I WAS IN THE USEEFFECT');
         const eventSource = new EventSource(targetUrl + '/stream');
         console.log(eventSource);
         eventSource.addEventListener('message', function eventy(e) {
             const data = JSON.parse(e.data);
-            console.log(data);
+            // console.log(data);
             if (globalChartData[0][0] === 0) {
                 const chartDataSkeleton: [number[]] = [[]];
                 if (props.config) {
@@ -177,18 +209,18 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
 
             for (const [ts, dat] of Object.entries<stream_item>(data)) {
                 globalChartData[0].push(parseInt(ts) / 1000);
-                console.log(dat);
+                // console.log(dat);
 
                 if (props.config?.clientsend_config && dat) {
                     for (const id in Object.keys(props.config?.clientsend_config)) {
-                        console.log(id);
+                        // console.log(id);
                         const sid = String(id);
                         if (typeof dat === 'object' && dat) {
                             if (sid in dat) {
                                 const value = dat[sid];
                                 if (typeof value === 'number') {
                                     if (value < 50) {
-                                        globalChartData[Number(id) + 1].push(value);
+                                        globalChartData[Number(id) + 1].push(value); // little verbose
                                     } else {
                                         globalChartData[Number(id) + 1].push(null);
                                     }
@@ -202,6 +234,7 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
                     }
                 }
             }
+            globalChartData = globalChartData.map((v) => v.splice(-chartDataMaxPoints));
             referenceToPlot?.current?.setData(globalChartData);
 
             // const t = globalChartData.map((elm, idx) => {

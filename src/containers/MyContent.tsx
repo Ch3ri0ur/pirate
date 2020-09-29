@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { Layout, Menu } from 'antd';
+import { Layout, Button, Menu, Modal } from 'antd';
+import { Store } from 'antd/lib/form/interface';
 import CustomSlider from '../components/Slider/MySliderWrapper';
 import ChartCombo, { pirateConfig } from '../components/Chart/ChartCombo';
 import SliderInput from '../components/Slider/SliderInput';
 import VideoStream from '../components/Janus/VideoStream';
+import SettingsModal from '../components/SettingsModal/SettingsModal';
 import useFetch from '../util/useFetch';
+import { createStore, useStore } from 'react-hookstore';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -27,10 +30,24 @@ const MyContent: React.FC<Props> = (props: Props) => {
 
     const { data, loading, error } = useFetch<pirateConfig>({ url: 'https://wappler.me/getconfig' });
 
+    const [modalVisible, setModalVisible] = useState(false);
     console.log(data);
     console.log(loading);
     console.log(error);
 
+    const handleOk = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        console.log(e);
+        setModalVisible(false);
+    };
+
+    const handleCancel = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        console.log(e);
+        setModalVisible(false);
+    };
+    function onCreate<T>(values: T) {
+        console.log('Received values of form: ', values);
+        setModalVisible(false);
+    }
     return (
         <Content style={{ margin: '0 16px' }}>
             {loading ? <p>Loading</p> : <ChartCombo config={data} />}
@@ -38,13 +55,23 @@ const MyContent: React.FC<Props> = (props: Props) => {
             {/* <CustomSlider min={0} max={10} name="P-Value"></CustomSlider>
             <CustomSlider min={0} max={10} name="I-Value"></CustomSlider>
             <CustomSlider min={0} max={10} name="D-Value"></CustomSlider>
-            <SliderInput
-                disabled={false}
-                readOnly={false}
-                min={0}
-                max={100}
-                onChange={(e) => console.log(e.value)}
-            ></SliderInput> */}
+            */}
+            <Button
+                type="primary"
+                onClick={() => {
+                    setModalVisible(true);
+                }}
+            >
+                New Collection
+            </Button>
+            <SettingsModal
+                visible={modalVisible}
+                onCreate={onCreate}
+                onCancel={() => {
+                    setModalVisible(false);
+                }}
+                config={data}
+            />
         </Content>
     );
 };
