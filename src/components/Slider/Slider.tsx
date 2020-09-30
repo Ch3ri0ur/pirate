@@ -4,10 +4,12 @@ import { createStore, useStore } from 'react-hookstore';
 import { useDebouncedCallback } from 'use-debounce';
 
 interface Props {
-    startvalue?: number;
+    key?: string;
+    startvalue: number;
     min: number;
     max: number;
     name: string;
+    index: string;
     // setValue: React.Dispatch<React.SetStateAction<number>>;
     children?: React.ReactChild;
 }
@@ -19,7 +21,7 @@ const CustomSlider: React.FC<Props> = (props: Props) => {
     //         return;
     //     }
     //     // props.setValue(Number(value));
-    const [slidy, setSlidy] = useState(0);
+    const [slidy, setSlidy] = useState(props.startvalue);
     const targetUrl = useStore<string>('ProjectTargetURL')[0];
 
     const [debouncedFunction, cancel] = useDebouncedCallback(
@@ -27,8 +29,7 @@ const CustomSlider: React.FC<Props> = (props: Props) => {
         // In this case all linters work correctly
         useCallback((value: number) => {
             const body = {
-                name: props.name,
-                value: value,
+                [props.index]: value,
             };
 
             fetch(targetUrl + '/ctrl', {
@@ -62,15 +63,15 @@ const CustomSlider: React.FC<Props> = (props: Props) => {
     return (
         <>
             <Slider
-                min={0}
-                max={100}
+                min={props.min}
+                max={props.max}
                 onChange={(v: number) => {
                     if (typeof v === 'number') {
                         setSlidy(v);
                     }
                 }}
                 value={slidy}
-                step={0.01}
+                step={(props.max - props.min) / 1000}
             />
         </>
     );

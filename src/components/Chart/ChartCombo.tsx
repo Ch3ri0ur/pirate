@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import uPlot from 'uplot';
 import { createStore, useStore } from 'react-hookstore';
+import useAnimationFrame from '../../util/useAnimationFrame';
 
 const canvasStyle = {
     display: 'flex',
@@ -59,9 +60,13 @@ let opts: uPlot.Options = {
         // },
     ],
 };
-
+// todo generics colors or more/wrap id
+const colors = ['red', 'blue', 'green', 'cyan', 'black', 'orange', 'purple'];
 type stream_item = {
     [ids: string]: number | string;
+};
+type stream_package = {
+    [ts: number]: stream_item;
 };
 
 export type clientsend_config_type = {
@@ -82,7 +87,7 @@ interface Props {
 }
 
 let globalChartData: (null | number)[][]; // = [[0], [0], [0], [0], [0]];
-
+let globalChartDataQueue: stream_package[] = [];
 let chartDataMaxPoints = 100;
 
 const ChartCombo: React.FC<Props> = (props: Props) => {
@@ -110,7 +115,7 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
                     scale: 'cm',
                     spanGaps: true,
                     value: (u: any, v: any) => (v == null ? '-' : v.toFixed(1) + ' cm'),
-                    stroke: 'red',
+                    stroke: colors[parseInt(id)],
                 });
                 chartDataSkeleton.push([0]);
                 showList.push(value.name);
@@ -190,69 +195,111 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
         };
     }, [referenceToCanvasElement]);
 
-    useEffect(() => {
-        console.log('I WAS IN THE USEEFFECT');
-        const eventSource = new EventSource(targetUrl + '/stream');
-        console.log(eventSource);
-        eventSource.addEventListener('message', function eventy(e) {
-            const data = JSON.parse(e.data);
-            // console.log(data);
-            if (globalChartData[0][0] === 0) {
-                const chartDataSkeleton: [number[]] = [[]];
-                if (props.config) {
-                    for (const [id, value] of Object.entries(props.config?.clientsend_config)) {
-                        chartDataSkeleton.push([]);
+    // todo put duplicate in function
+    const dataHandler = () => {
+        // for (const data of globalChartDataQueue) {
+        // console.log(globalChartDataQueue.length);
+        if (globalChartDataQueue.length === 0) {
+            return;
+        } else if (globalChartDataQueue.length < 3) {
+            const data = globalChartDataQueue.shift();
+            if (data) {
+                if (globalChartData[0][0] === 0) {
+                    const chartDataSkeleton: [number[]] = [[]];
+                    if (props.config) {
+                        for (const [id, value] of Object.entries(props.config?.clientsend_config)) {
+                            chartDataSkeleton.push([]);
+                        }
                     }
+                    globalChartData = chartDataSkeleton;
                 }
-                globalChartData = chartDataSkeleton;
-            }
 
-            for (const [ts, dat] of Object.entries<stream_item>(data)) {
-                globalChartData[0].push(parseInt(ts) / 1000);
-                // console.log(dat);
+                for (const [ts, dat] of Object.entries<stream_item>(data)) {
+                    globalChartData[0].push(parseInt(ts) / 1000);
+                    // console.log(dat);
 
-                if (props.config?.clientsend_config && dat) {
-                    for (const id in Object.keys(props.config?.clientsend_config)) {
-                        // console.log(id);
-                        const sid = String(id);
-                        if (typeof dat === 'object' && dat) {
-                            if (sid in dat) {
-                                const value = dat[sid];
-                                if (typeof value === 'number') {
-                                    if (value < 50) {
-                                        globalChartData[Number(id) + 1].push(value); // little verbose
+                    if (props.config?.clientsend_config && dat) {
+                        for (const id in Object.keys(props.config?.clientsend_config)) {
+                            // console.log(id);
+                            const sid = String(id);
+                            if (typeof dat === 'object' && dat) {
+                                if (sid in dat) {
+                                    const value = dat[sid];
+                                    if (typeof value === 'number') {
+                                        if (value) {
+                                            globalChartData[Number(id) + 1].push(value); // little verbose
+                                        } else {
+                                            globalChartData[Number(id) + 1].push(null);
+                                        }
                                     } else {
                                         globalChartData[Number(id) + 1].push(null);
                                     }
                                 } else {
                                     globalChartData[Number(id) + 1].push(null);
                                 }
-                            } else {
-                                globalChartData[Number(id) + 1].push(null);
                             }
                         }
                     }
                 }
             }
-            globalChartData = globalChartData.map((v) => v.splice(-chartDataMaxPoints));
-            referenceToPlot?.current?.setData(globalChartData);
 
-            // const t = globalChartData.map((elm, idx) => {
-            //     let dataToAdd: null | number = splitData[idx];
-            //     if (idx > 0) {
-            //         if (dataToAdd !== null && dataToAdd > 500) {
-            //             dataToAdd = null;
-            //         }
-            //     } else {
-            //         dataToAdd = splitData[idx] / 1000;
-            //     }
-            //     const ely = elm.slice(-100);
-            //     return [...ely, dataToAdd];
-            // });
-            // referenceToPlot?.current?.setData(t);
-            // globalChartData = t;
+            // }
+        } else {
+            const workload = globalChartDataQueue.slice(0, globalChartDataQueue.length / 2);
+            globalChartDataQueue = globalChartDataQueue.slice(globalChartDataQueue.length / 2);
+            for (const [id, data] of Object.entries(workload)) {
+                if (data) {
+                    // console.log(id, data);
+                    if (globalChartData[0][0] === 0) {
+                        const chartDataSkeleton: [number[]] = [[]];
+                        if (props.config) {
+                            for (const [id, value] of Object.entries(props.config?.clientsend_config)) {
+                                chartDataSkeleton.push([]);
+                            }
+                        }
+                        globalChartData = chartDataSkeleton;
+                    }
 
-            // console.log(datar);
+                    for (const [ts, dat] of Object.entries<stream_item>(data)) {
+                        globalChartData[0].push(parseInt(ts) / 1000);
+                        // console.log(dat);
+
+                        if (props.config?.clientsend_config && dat) {
+                            for (const id in Object.keys(props.config?.clientsend_config)) {
+                                // console.log(id);
+                                const sid = String(id);
+                                if (typeof dat === 'object' && dat) {
+                                    if (sid in dat) {
+                                        const value = dat[sid];
+                                        if (typeof value === 'number') {
+                                            globalChartData[Number(id) + 1].push(value); // little verbose
+                                        } else {
+                                            globalChartData[Number(id) + 1].push(null);
+                                        }
+                                    } else {
+                                        globalChartData[Number(id) + 1].push(null);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // globalChartDataQueue = [];
+        globalChartData = globalChartData.map((v) => v.splice(-chartDataMaxPoints));
+        referenceToPlot?.current?.setData(globalChartData);
+    };
+
+    useEffect(() => {
+        console.log(`Opening Stream at: ${targetUrl}/stream`);
+        const eventSource = new EventSource(targetUrl + '/stream');
+        console.log(eventSource);
+        eventSource.addEventListener('message', function eventy(e) {
+            const data = JSON.parse(e.data);
+            // console.log(data);
+            globalChartDataQueue.push(data);
         });
         return () => {
             console.log('Closing SSE EnventSource');
@@ -261,6 +308,11 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
         };
     }, []);
 
+    useAnimationFrame((t) => {
+        if (globalChartDataQueue.length !== 0) {
+            dataHandler();
+        }
+    });
     return <div style={canvasStyle} ref={referenceToCanvasElement} />;
 };
 

@@ -45,16 +45,13 @@ const SettingsModal: React.FC<CollectionCreateFormProps> = ({
     const [graphShowList, setGraphShowList] = useStore<string[]>('graphShowList');
     let checkBoxList = null;
     if (config) {
-        for (const [id, value] of Object.entries(config?.clientsend_config)) {
-            console.log(id, value);
-            checkBoxList = Object.entries(config?.clientsend_config).map(([k, v]) => {
-                return (
-                    <Checkbox key={v.name} value={v.name} style={{ lineHeight: '32px' }}>
-                        {v.name}
-                    </Checkbox>
-                );
-            });
-        }
+        checkBoxList = Object.entries(config?.clientsend_config).map(([k, v]) => {
+            return (
+                <Checkbox key={v.name} value={v.name} style={{ lineHeight: '32px' }}>
+                    {v.name}
+                </Checkbox>
+            );
+        });
     }
     return (
         <Modal
@@ -95,7 +92,7 @@ const SettingsModal: React.FC<CollectionCreateFormProps> = ({
                     name="maxpoints"
                     label="Maximum of Points in Graph"
                     initialValue={chartDataMaxPoints}
-                    rules={[{ type: 'number', min: 0, max: 400 }]}
+                    rules={[{ type: 'number', min: 0, max: 5000 }]}
                 >
                     <InputNumber />
                 </Form.Item>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { Layout, Button, Menu, Modal } from 'antd';
 import { Store } from 'antd/lib/form/interface';
-import CustomSlider from '../components/Slider/MySliderWrapper';
+import CustomSlider from '../components/Slider/Slider';
 import ChartCombo, { pirateConfig } from '../components/Chart/ChartCombo';
 import SliderInput from '../components/Slider/SliderInput';
 import VideoStream from '../components/Janus/VideoStream';
@@ -48,14 +48,24 @@ const MyContent: React.FC<Props> = (props: Props) => {
         console.log('Received values of form: ', values);
         setModalVisible(false);
     }
+    let sliderList;
+    const config = data;
+    // todo check for bool/ string and handle accordingly
+    if (config) {
+        sliderList = Object.entries(config?.arduinosend_config).map(([k, v]) => {
+            return (
+                <CustomSlider key={v.name} index={k} min={v.min} max={v.max} name={v.name} startvalue={v.default}>
+                    {v.name}
+                </CustomSlider>
+            );
+        });
+    }
+
     return (
         <Content style={{ margin: '0 16px' }}>
             {loading ? <p>Loading</p> : <ChartCombo config={data} />}
             <VideoStream></VideoStream>
-            {/* <CustomSlider min={0} max={10} name="P-Value"></CustomSlider>
-            <CustomSlider min={0} max={10} name="I-Value"></CustomSlider>
-            <CustomSlider min={0} max={10} name="D-Value"></CustomSlider>
-            */}
+            {sliderList}
             <Button
                 type="primary"
                 onClick={() => {
