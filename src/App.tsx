@@ -1,27 +1,18 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 // import Layout from './components/Layout/Layout';
-// import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
 
-// import io from 'socket.io-client';
 import MemoSider from './components/UI/Sider/MySider';
 import MyContent from './containers/MyContent';
-// import throttle from './util/throttle';
 import { createStore, useStore } from 'react-hookstore';
 import { Layout, Menu } from 'antd';
 const { Header, Content, Footer, Sider } = Layout;
 
-// createStore('ProjectTargetURL', 'https://wappler.me/project1');
-// TODO make dynamic url source / probably window.location.hostname
-createStore('ProjectTargetURL', 'https://wappler.me');
+createStore('ProjectTargetURL', window.origin);
 createStore('chartDataMaxPoints', 100);
 createStore<string[]>('graphShowList', []);
 
-// const socket = io('http://raspberrypi:3000');
 
 const App: React.FC = () => {
-    // useEffect(() => {
-    //     debouncedFunction(pValue, iValue, dValue);
-    // }, [pValue, iValue, dValue]);
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
@@ -37,6 +28,5 @@ const App: React.FC = () => {
     );
 };
 
-// {/* <BurgerBuilder></BurgerBuilder> */}
 
 export default App;

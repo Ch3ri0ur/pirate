@@ -1,12 +1,7 @@
 // import { ReactComponent } from '*.svg';
 import React, { useEffect, useState } from 'react';
+import { useStore } from 'react-hookstore';
 import Janus, { JanusJS } from './janus';
-
-let server = '';
-// if (window.location.protocol === "http:") server = "http://" + window.location.hostname + "/janusopt/janus";
-// else server = "https://" + window.location.hostname + "/janusopt/janus";
-// TODO make dynamic ( there is a useStore hook aroud )
-server = 'https://wappler.me/janusopt/janus';
 
 let janus: Janus;
 let streaming: JanusJS.PluginHandle;
@@ -23,7 +18,7 @@ Janus.init({
     },
 });
 
-const startSession = () => {
+const startSession = (server:string) => {
     if (!Janus.isWebrtcSupported()) {
         alert('No WebRTC support... ');
         return;
@@ -161,6 +156,7 @@ interface Props {
 }
 
 const VideoStream = (props: Props) => {
+    const targetUrl = useStore<string>('ProjectTargetURL')[0];
     const [haveSession, setHaveSession] = useState(false);
     const [streaming, setStreaming] = useState(false);
     useEffect(() => {
@@ -175,7 +171,7 @@ const VideoStream = (props: Props) => {
     }, []);
 
     function startSessionHandler() {
-        startSession();
+        startSession(targetUrl+"/janusopt/janus");
         setHaveSession(true);
     }
 

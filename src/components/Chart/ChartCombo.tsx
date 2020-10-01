@@ -207,7 +207,8 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
         } else if (globalChartDataQueue.length < 3) {
             const data = globalChartDataQueue.shift();
             if (data) {
-                if (globalChartData[0][0] === 0) {
+                //console.log(globalChartData);
+                if (!globalChartData) {
                     const chartDataSkeleton: [number[]] = [[]];
                     if (props.config) {
                         for (const [id, value] of Object.entries(props.config?.clientsend_config)) {

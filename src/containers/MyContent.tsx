@@ -28,7 +28,8 @@ const MyContent: React.FC<Props> = (props: Props) => {
     // const [response, setResponse] = useState(false);
     // const [endPoint, setEndPoint] = useState('http://raspberrypi:3000');
 
-    const { data, loading, error } = useFetch<pirateConfig>({ url: 'https://wappler.me/getconfig' });
+    const targetUrl = useStore<string>('ProjectTargetURL')[0];
+    const { data, loading, error } = useFetch<pirateConfig>({ url: targetUrl+'/getconfig' });
 
     const [modalVisible, setModalVisible] = useState(false);
     console.log(data);
