@@ -148,6 +148,9 @@ function startStream() {
 function stopStream() {
     // $("#watch").attr("disabled", true).unbind("click");
     console.log('stopStream');
+
+    // TODO check if streaming is a session/has send/hangup  -> got cannot read property "send" of undefined when no connection could be made and i tried to disconnect
+    // TODO find similar errors
     const body = { request: 'stop' };
     streaming.send({ message: body });
     streaming.hangup();

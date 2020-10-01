@@ -319,6 +319,7 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
 
     // TODO start stop button
     // TODO export datapoints / think of merging timestamps?
+    // TODO create similar sized placholder
     return <div style={canvasStyle} ref={referenceToCanvasElement} />;
 };
 
