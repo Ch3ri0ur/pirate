@@ -192,6 +192,10 @@ const VideoStream = (props: Props) => {
     }
     // todo replace buttons with antd buttons -> leaving tailwind for simplicity
     // todo investigate stuttering / glitches / reconnects
+    // todo set a good size for video/ have something inplace with same size do prevent layout shifts when starting
+    // todo move buttons to a spot relative to video element (perhaps beneath? or above?)
+    // todo those classnames are tailwind remnants
+
     return (
         <div>
             <button

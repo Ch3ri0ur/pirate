@@ -34,6 +34,8 @@ interface CollectionCreateFormProps {
     config: pirateConfig | undefined;
 }
 
+// todo create options to move enabled graphs to another scale ( radio buttons behind the checkmarks? for two scales?)
+
 const SettingsModal: React.FC<CollectionCreateFormProps> = ({
     visible,
     onCreate,
@@ -97,41 +99,7 @@ const SettingsModal: React.FC<CollectionCreateFormProps> = ({
                     <InputNumber />
                 </Form.Item>
                 <Form.Item name="checkbox-group" label="Checkbox.Group" initialValue={graphShowList}>
-                    <Checkbox.Group>
-                        {checkBoxList}
-                        {/* <Row>
-                            <Col span={8}>
-                                <Checkbox value="A" style={{ lineHeight: '32px' }}>
-                                    A
-                                </Checkbox>
-                            </Col>
-                            <Col span={8}>
-                                <Checkbox value="B" style={{ lineHeight: '32px' }} disabled>
-                                    B
-                                </Checkbox>
-                            </Col>
-                            <Col span={8}>
-                                <Checkbox value="C" style={{ lineHeight: '32px' }}>
-                                    C
-                                </Checkbox>
-                            </Col>
-                            <Col span={8}>
-                                <Checkbox value="D" style={{ lineHeight: '32px' }}>
-                                    D
-                                </Checkbox>
-                            </Col>
-                            <Col span={8}>
-                                <Checkbox value="E" style={{ lineHeight: '32px' }}>
-                                    E
-                                </Checkbox>
-                            </Col>
-                            <Col span={8}>
-                                <Checkbox value="F" style={{ lineHeight: '32px' }}>
-                                    F
-                                </Checkbox>
-                            </Col>
-                        </Row> */}
-                    </Checkbox.Group>
+                    <Checkbox.Group>{checkBoxList}</Checkbox.Group>
                 </Form.Item>
                 <Form.Item name="description" label="Description">
                     <Input type="textarea" />
