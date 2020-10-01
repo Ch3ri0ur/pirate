@@ -9,6 +9,9 @@ const canvasStyle = {
     justifyContent: 'center',
 };
 
+// TODO what units on the two scales?
+// TODO set scaling better so as to not clip the scales
+
 let opts: uPlot.Options = {
     title: 'Fixed length / sliding data slices',
     width: 800,
