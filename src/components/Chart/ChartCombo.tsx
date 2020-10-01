@@ -313,6 +313,9 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
             dataHandler();
         }
     });
+
+    // todo start stop button
+    // TODO export datapoints / think of merging timestamps?
     return <div style={canvasStyle} ref={referenceToCanvasElement} />;
 };
 

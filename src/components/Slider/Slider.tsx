@@ -14,6 +14,8 @@ interface Props {
     children?: React.ReactChild;
 }
 
+// todo add name/value/max/min etc kind of like in mysliderwrapper and style better
+
 const CustomSlider: React.FC<Props> = (props: Props) => {
     // const [inputValue, setInputValue] = useState<number>(props.value);
     // const onChange = (value: number | string | undefined | [number, number]) => {

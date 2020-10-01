@@ -60,7 +60,10 @@ const MyContent: React.FC<Props> = (props: Props) => {
             );
         });
     }
-
+    // todo later create tests / encapsulate some functionality to enable tests
+    // todo style better
+    // todo create subcomponents
+    //
     return (
         <Content style={{ margin: '0 16px' }}>
             {loading ? <p>Loading</p> : <ChartCombo config={data} />}

@@ -190,7 +190,8 @@ const VideoStream = (props: Props) => {
         stopStream();
         setStreaming(false);
     }
-
+    // todo replace buttons with antd buttons -> leaving tailwind for simplicity
+    // todo investigate stuttering / glitches / reconnects
     return (
         <div>
             <button
