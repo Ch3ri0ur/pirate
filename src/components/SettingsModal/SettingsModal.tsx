@@ -34,7 +34,7 @@ interface CollectionCreateFormProps {
     config: pirateConfig | undefined;
 }
 
-// todo create options to move enabled graphs to another scale ( radio buttons behind the checkmarks? for two scales?)
+// TODO create options to move enabled graphs to another scale ( radio buttons behind the checkmarks? for two scales?)
 
 const SettingsModal: React.FC<CollectionCreateFormProps> = ({
     visible,

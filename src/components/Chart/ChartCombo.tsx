@@ -60,7 +60,7 @@ let opts: uPlot.Options = {
         // },
     ],
 };
-// todo generics colors or more/wrap id
+// TODO generics colors or more/wrap id
 const colors = ['red', 'blue', 'green', 'cyan', 'black', 'orange', 'purple'];
 type stream_item = {
     [ids: string]: number | string;
@@ -195,7 +195,7 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
         };
     }, [referenceToCanvasElement]);
 
-    // todo put duplicate in function
+    // TODO put duplicate in function
     const dataHandler = () => {
         // for (const data of globalChartDataQueue) {
         // console.log(globalChartDataQueue.length);
@@ -314,7 +314,7 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
         }
     });
 
-    // todo start stop button
+    // TODO start stop button
     // TODO export datapoints / think of merging timestamps?
     return <div style={canvasStyle} ref={referenceToCanvasElement} />;
 };

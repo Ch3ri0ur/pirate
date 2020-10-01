@@ -11,7 +11,7 @@ import { Layout, Menu } from 'antd';
 const { Header, Content, Footer, Sider } = Layout;
 
 // createStore('ProjectTargetURL', 'https://wappler.me/project1');
-// todo make dynamic url source / probably window.location.hostname
+// TODO make dynamic url source / probably window.location.hostname
 createStore('ProjectTargetURL', 'https://wappler.me');
 createStore('chartDataMaxPoints', 100);
 createStore<string[]>('graphShowList', []);

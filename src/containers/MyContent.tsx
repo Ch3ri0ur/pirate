@@ -50,7 +50,7 @@ const MyContent: React.FC<Props> = (props: Props) => {
     }
     let sliderList;
     const config = data;
-    // todo check for bool/ string and handle accordingly
+    // TODO check for bool/ string and handle accordingly
     if (config) {
         sliderList = Object.entries(config?.arduinosend_config).map(([k, v]) => {
             return (
@@ -60,9 +60,9 @@ const MyContent: React.FC<Props> = (props: Props) => {
             );
         });
     }
-    // todo later create tests / encapsulate some functionality to enable tests
-    // todo style better
-    // todo create subcomponents
+    // TODO later create tests / encapsulate some functionality to enable tests
+    // TODO style better
+    // TODO create subcomponents
     //
     return (
         <Content style={{ margin: '0 16px' }}>

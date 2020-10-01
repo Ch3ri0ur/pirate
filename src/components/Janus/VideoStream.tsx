@@ -5,6 +5,7 @@ import Janus, { JanusJS } from './janus';
 let server = '';
 // if (window.location.protocol === "http:") server = "http://" + window.location.hostname + "/janusopt/janus";
 // else server = "https://" + window.location.hostname + "/janusopt/janus";
+// TODO make dynamic ( there is a useStore hook aroud )
 server = 'https://wappler.me/janusopt/janus';
 
 let janus: Janus;
@@ -190,11 +191,13 @@ const VideoStream = (props: Props) => {
         stopStream();
         setStreaming(false);
     }
-    // todo replace buttons with antd buttons -> leaving tailwind for simplicity
-    // todo investigate stuttering / glitches / reconnects
-    // todo set a good size for video/ have something inplace with same size do prevent layout shifts when starting
-    // todo move buttons to a spot relative to video element (perhaps beneath? or above?)
-    // todo those classnames are tailwind remnants
+    // TODO replace buttons with antd buttons -> leaving tailwind for simplicity
+    // TODO investigate stuttering / glitches / reconnects
+    // TODO set a good size for video/ have something inplace with same size do prevent layout shifts when starting
+    // TODO move buttons to a spot relative to video element (perhaps beneath? or above?)
+    // TODO those classnames are tailwind remnants
+    // TODO investigate why ice doesn't work without 1-1 nat mapping
+    // TODO think about making buttons more clear or starting automatically? perhaps thats not optimal
 
     return (
         <div>
