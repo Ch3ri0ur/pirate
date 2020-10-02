@@ -52,7 +52,7 @@ let opts: uPlot.Options = {
     axes: [
         {},
         {
-            size: 80,
+            size: 80, //TODO Dynamic maybe?
             scale: 'cm',
             values: (u, vals, space) => vals.map((v) => +v.toFixed(1) + ' cm'),
         },
