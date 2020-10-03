@@ -11,9 +11,10 @@ const canvasStyle = {
 
 // TODO what units on the two scales?
 // TODO set scaling better so as to not clip the scales
+// TODO imporve timescale and create generic scales/make settable
 
 let opts: uPlot.Options = {
-    title: 'Fixed length / sliding data slices',
+    title: 'Control Graph',
     width: 800,
     height: 600,
     series: [

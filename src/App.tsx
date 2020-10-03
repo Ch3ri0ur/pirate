@@ -11,15 +11,15 @@ createStore('ProjectTargetURL', window.origin);
 createStore('chartDataMaxPoints', 100);
 createStore<string[]>('graphShowList', []);
 
-
 const App: React.FC = () => {
-
     return (
         <Layout style={{ minHeight: '100vh' }}>
             {/* <MemoSider></MemoSider> */}
             <Layout className="site-layout">
                 <Header className="site-layout-background" style={{ padding: 0 }}>
-                    <h3 style={{ color: 'white', margin: ' 0 20px ' }}>This is the first Project</h3>
+                    <h3 style={{ color: 'white', margin: ' 0 20px ' }}>
+                        Pirate implements remote access to experiments
+                    </h3>
                 </Header>
                 <MyContent></MyContent>
                 <Footer style={{ textAlign: 'center' }}>This is a very nice Footer</Footer>
@@ -27,6 +27,5 @@ const App: React.FC = () => {
         </Layout>
     );
 };
-
 
 export default App;

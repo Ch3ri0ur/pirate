@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useStore } from 'react-hookstore';
 import Janus, { JanusJS } from './janus';
+import { Row, Col, Button, Space } from 'antd';
 
 let janus: Janus;
 let streaming: JanusJS.PluginHandle;
@@ -18,7 +19,7 @@ Janus.init({
     },
 });
 
-const startSession = (server:string) => {
+const startSession = (server: string) => {
     if (!Janus.isWebrtcSupported()) {
         alert('No WebRTC support... ');
         return;
@@ -171,7 +172,7 @@ const VideoStream = (props: Props) => {
     }, []);
 
     function startSessionHandler() {
-        startSession(targetUrl+"/janusopt/janus");
+        startSession(targetUrl + '/janus');
         setHaveSession(true);
     }
 
@@ -200,54 +201,35 @@ const VideoStream = (props: Props) => {
 
     return (
         <div>
-            <button
-                className="bg-blue-500 hover:bg-blue-700 disabled:bg-red-700 text-white font-bold py-2 px-4 rounded m-2 "
-                disabled={haveSession}
-                onClick={startSessionHandler}
-            >
-                Start
-            </button>
-            <button
-                className="bg-blue-500  hover:bg-blue-700 disabled:bg-red-700 text-white font-bold py-2 px-4 rounded m-2"
-                disabled={!haveSession}
-                onClick={stopSessionHandler}
-            >
-                Stop
-            </button>
-            <button
-                className="bg-blue-600  hover:bg-blue-700 disabled:bg-red-700 text-white font-bold py-2 px-4 rounded m-2"
-                disabled={!haveSession || streaming}
-                onClick={startStreamHandler}
-            >
-                startStream
-            </button>
-            <button
-                className="bg-blue-600  hover:bg-blue-700 disabled:bg-red-700 text-white font-bold py-2 px-4 rounded m-2"
-                disabled={!haveSession || !streaming}
-                onClick={stopStreamHandler}
-            >
-                stopStream
-            </button>
-            {/* <video
-        className="rounded centered"
-        id="waitingvideo"
-        width="100%"
-        height="100%"
-      /> */}
-
-            {haveSession ? (
-                <video
-                    className="rounded hide w-2/3  m-auto"
-                    id="remotevideo"
-                    ref={videoPlayerRef}
-                    autoPlay
-                    playsInline
-                />
-            ) : (
-                <div className="w-2/3 h-2/3 object-cover m-auto">
-                    <p>No Connection</p>
-                </div>
-            )}
+            <Row>
+                <Col span={12}>
+                    <Space>
+                        <Button type="primary" disabled={haveSession} onClick={startSessionHandler}>
+                            Start
+                        </Button>
+                        <Button type="primary" danger disabled={!haveSession} onClick={stopSessionHandler}>
+                            stop
+                        </Button>
+                        <Button type="primary" disabled={!haveSession || streaming} onClick={startStreamHandler}>
+                            StartStream
+                        </Button>
+                        <Button type="primary" danger disabled={!haveSession || !streaming} onClick={stopStreamHandler}>
+                            StopStream
+                        </Button>
+                    </Space>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    {haveSession ? (
+                        <video style={{ width: '100%' }} id="remotevideo" ref={videoPlayerRef} autoPlay playsInline />
+                    ) : (
+                        <div className="w-2/3 h-2/3 object-cover m-auto">
+                            <p>No Connection</p>
+                        </div>
+                    )}
+                </Col>
+            </Row>
         </div>
     );
 };

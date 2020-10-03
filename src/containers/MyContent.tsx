@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { Layout, Button, Menu, Modal } from 'antd';
+import { Layout, Button, Menu, Modal, Row, Col, Space } from 'antd';
 import { Store } from 'antd/lib/form/interface';
 import CustomSlider from '../components/Slider/Slider';
 import ChartCombo, { pirateConfig } from '../components/Chart/ChartCombo';
@@ -29,7 +29,7 @@ const MyContent: React.FC<Props> = (props: Props) => {
     // const [endPoint, setEndPoint] = useState('http://raspberrypi:3000');
 
     const targetUrl = useStore<string>('ProjectTargetURL')[0];
-    const { data, loading, error } = useFetch<pirateConfig>({ url: targetUrl+'/getconfig' });
+    const { data, loading, error } = useFetch<pirateConfig>({ url: targetUrl + '/getconfig' });
 
     const [modalVisible, setModalVisible] = useState(false);
     console.log(data);
@@ -67,17 +67,27 @@ const MyContent: React.FC<Props> = (props: Props) => {
     //
     return (
         <Content style={{ margin: '0 16px' }}>
-            {loading ? <p>Loading</p> : <ChartCombo config={data} />}
-            <VideoStream></VideoStream>
-            {sliderList}
-            <Button
-                type="primary"
-                onClick={() => {
-                    setModalVisible(true);
-                }}
-            >
-                New Collection
-            </Button>
+            <Row>
+                <Col span={24}>{loading ? <p>Loading</p> : <ChartCombo config={data} />}</Col>
+            </Row>
+            <Row>
+                <Col xs={24} md={12} xl={16}>
+                    <div style={{ margin: 8 }}>
+                        {sliderList}
+                        <Button
+                            type="primary"
+                            onClick={() => {
+                                setModalVisible(true);
+                            }}
+                        >
+                            New Collection
+                        </Button>
+                    </div>
+                </Col>
+                <Col xs={24} md={12} xl={8}>
+                    <VideoStream></VideoStream>
+                </Col>
+            </Row>
             <SettingsModal
                 visible={modalVisible}
                 onCreate={onCreate}

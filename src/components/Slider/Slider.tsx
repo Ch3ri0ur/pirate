@@ -64,17 +64,27 @@ const CustomSlider: React.FC<Props> = (props: Props) => {
 
     return (
         <>
-            <Slider
-                min={props.min}
-                max={props.max}
-                onChange={(v: number) => {
-                    if (typeof v === 'number') {
-                        setSlidy(v);
-                    }
-                }}
-                value={slidy}
-                step={(props.max - props.min) / 1000}
-            />
+            {/* <Divider orientation="center">{props.name}</Divider> */}
+            <Row justify="space-between" align="middle">
+                <Col xs={24} lg={12} xl={8}>
+                    <div>
+                        Min: {props.min} - Value: {slidy} - Max: {props.max} - Name: {props.name}
+                    </div>
+                </Col>
+                <Col xs={24} lg={12} xl={16}>
+                    <Slider
+                        min={props.min}
+                        max={props.max}
+                        onChange={(v: number) => {
+                            if (typeof v === 'number') {
+                                setSlidy(v);
+                            }
+                        }}
+                        value={slidy}
+                        step={(props.max - props.min) / 1000}
+                    />
+                </Col>
+            </Row>
         </>
     );
 };
