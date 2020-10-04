@@ -109,7 +109,6 @@ interface Props {
 
 let globalChartData: (null | number)[][]; // = [[0], [0], [0], [0], [0]];
 let globalPauseData: (null | number)[][];
-let globalPauseDataString: string;
 let globalChartDataQueue: stream_package[] = [];
 let graphNames: string[];
 let chartDataMaxPoints = 100;
@@ -142,6 +141,7 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
         graphNames = ['Timestamp'];
         if (props.config) {
             for (const [id, value] of Object.entries(props.config?.clientsend_config)) {
+                // TODO check if type string / char and ignore
                 let unit = '';
                 const matches = value.scale.match(/\[(.*?)\]/);
                 if (matches) {
@@ -261,11 +261,10 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
         if (graphIsRunningRef.current) {
             referenceToPlot?.current?.setData(globalChartData);
             first = true;
-            globalPauseDataString = '';
+            globalPauseData = [];
         } else {
             if (first) {
-                globalPauseDataString = JSON.stringify(globalChartData);
-                globalPauseData = JSON.parse(globalPauseDataString);
+                globalPauseData = JSON.parse(JSON.stringify(globalChartData));
                 referenceToPlot?.current?.setData(globalPauseData);
                 first = false;
             }
@@ -346,8 +345,6 @@ function dealWithQueueData(data: stream_package | undefined, clientsend_config: 
 }
 
 const exportToJson = () => {
-    let downloadJSONString = globalPauseDataString;
-
     const items = globalPauseData;
     const replacer = (value: any) => (value === null ? '' : value); // specify how you want to handle null values here
     const header = graphNames;
@@ -359,20 +356,6 @@ const exportToJson = () => {
 
     const joinedarray = array.map((subarray: any) => subarray.join(','));
     const csv = joinedarray.join('\n');
-    // const csv = items.map((row) => header.map((fieldName: any) => JSON.stringify(row[fieldName], replacer)).join(','));
-    // csv.unshift(header.join(','));
-    // const csvstring = csv.join('\r\n');
-
-    // console.log(csvstring);
-
-    // const list = JSON.parse(downloadJSONString);
-    // const mappedObject: { [key: string]: [] } = {};
-    // if (list.length === graphNames.length) {
-    //     list.forEach(function (sublist: any, index: number, array: any) {
-    //         mappedObject[graphNames[index]] = sublist;
-    //     });
-    //     downloadJSONString = JSON.stringify(mappedObject);
-    // }
 
     const filename = 'export.csv';
     const contentType = 'data:text/csv;charset=utf-8;';

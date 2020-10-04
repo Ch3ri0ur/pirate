@@ -147,6 +147,7 @@ function stopStream() {
 
     // TODO check if streaming is a session/has send/hangup  -> got cannot read property "send" of undefined when no connection could be made and i tried to disconnect
     // TODO find similar errors
+    // TODO propperly track if there is a session or not, dont assume and not react to errors
     const body = { request: 'stop' };
     streaming.send({ message: body });
     streaming.hangup();
@@ -191,11 +192,9 @@ const VideoStream = (props: Props) => {
         stopStream();
         setStreaming(false);
     }
-    // TODO replace buttons with antd buttons -> leaving tailwind for simplicity
+
     // TODO investigate stuttering / glitches / reconnects
     // TODO set a good size for video/ have something inplace with same size do prevent layout shifts when starting
-    // TODO move buttons to a spot relative to video element (perhaps beneath? or above?)
-    // TODO those classnames are tailwind remnants
     // TODO investigate why ice doesn't work without 1-1 nat mapping
     // TODO think about making buttons more clear or starting automatically? perhaps thats not optimal
 

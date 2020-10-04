@@ -8,6 +8,8 @@ interface Props {
     config: pirateConfig;
 }
 
+// TODO handle strings / char securely and enable return
+
 const SliderList: React.FC<Props> = (props: Props) => {
     const targetUrl = useStore<string>('ProjectTargetURL')[0];
     const uuid = useStore<string>('clientUUID')[0];
@@ -15,6 +17,7 @@ const SliderList: React.FC<Props> = (props: Props) => {
     console.log('in sliderlist', props.config);
     let listOfSliders = Object.entries(props.config?.arduinosend_config).map(([k, v]) => {
         console.log('test', k, v);
+        // TODO check if string/char / bool and handle accordingly
         return (
             <CustomSlider
                 key={v.name}

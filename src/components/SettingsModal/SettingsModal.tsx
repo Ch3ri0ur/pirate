@@ -48,6 +48,7 @@ const SettingsModal: React.FC<CollectionCreateFormProps> = ({
     let checkBoxList = null;
     if (config) {
         checkBoxList = Object.entries(config?.clientsend_config).map(([k, v]) => {
+            // TODO handle sting/char /bool/ differently
             return (
                 <Checkbox key={v.name} value={v.name} style={{ lineHeight: '32px' }}>
                     {v.name}
