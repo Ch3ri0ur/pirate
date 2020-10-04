@@ -57,12 +57,12 @@ let opts: uPlot.Options = {
             scale: 'cm',
             values: (u, vals, space) => vals.map((v) => +v.toFixed(1) + ' cm'),
         },
-        // {
-        //     side: 1,
-        //     scale: 'mb',
-        //     values: (u, vals, space) => vals.map((v) => +v.toFixed(2) + ' MB'),
-        //     grid: { show: false },
-        // },
+        {
+            side: 1,
+            scale: 'mb',
+            values: (u, vals, space) => vals.map((v) => +v.toFixed(2) + ' MB'),
+            grid: { show: false },
+        },
     ],
 };
 // TODO generics colors or more/wrap id
@@ -232,11 +232,7 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
                                 if (sid in dat) {
                                     const value = dat[sid];
                                     if (typeof value === 'number') {
-                                        if (value) {
-                                            globalChartData[Number(id) + 1].push(value); // little verbose
-                                        } else {
-                                            globalChartData[Number(id) + 1].push(null);
-                                        }
+                                        globalChartData[Number(id) + 1].push(value); // little verbose
                                     } else {
                                         globalChartData[Number(id) + 1].push(null);
                                     }
