@@ -5,11 +5,14 @@ import MemoSider from './components/UI/Sider/MySider';
 import MyContent from './containers/MyContent';
 import { createStore, useStore } from 'react-hookstore';
 import { Layout, Menu } from 'antd';
+import { v4 as uuidv4 } from 'uuid';
 const { Header, Content, Footer, Sider } = Layout;
 
 createStore('ProjectTargetURL', window.origin);
 createStore('chartDataMaxPoints', 100);
 createStore<string[]>('graphShowList', []);
+// createStore<string[]>('arduinoState', []);
+createStore<string>('clientUUID', uuidv4());
 
 const App: React.FC = () => {
     return (

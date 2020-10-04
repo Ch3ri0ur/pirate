@@ -5,33 +5,47 @@ import { useDebouncedCallback } from 'use-debounce';
 
 interface Props {
     key?: string;
-    startvalue: number;
+    value: number;
     min: number;
     max: number;
     name: string;
     index: string;
-    // setValue: React.Dispatch<React.SetStateAction<number>>;
+    newValueCallbackRef: React.MutableRefObject<{
+        [key: string]: (value: number) => void;
+    }>;
     children?: React.ReactChild;
 }
 
 // TODO add name/value/max/min etc kind of like in mysliderwrapper and style better
 
 const CustomSlider: React.FC<Props> = (props: Props) => {
-    // const [inputValue, setInputValue] = useState<number>(props.value);
-    // const onChange = (value: number | string | undefined | [number, number]) => {
-    //     if (!(value as number)) {
-    //         return;
-    //     }
-    //     // props.setValue(Number(value));
-    const [slidy, setSlidy] = useState(props.startvalue);
+    const [inputValue, setInputValue] = useState(props.value);
     const targetUrl = useStore<string>('ProjectTargetURL')[0];
+    const uuid = useStore<string>('clientUUID')[0];
+
+    useEffect(() => {
+        props.newValueCallbackRef.current[props.index] = (value: number) => {
+            console.log('updating');
+            if (typeof value === 'number') {
+                setInputValue(value);
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        onChange(props.value);
+        return () => {};
+    }, [props.value]);
 
     const [debouncedFunction, cancel] = useDebouncedCallback(
         // to memoize debouncedFunction we use useCallback hook.
         // In this case all linters work correctly
         useCallback((value: number) => {
             const body = {
-                [props.index]: value,
+                uuid: uuid,
+                data: {
+                    [props.index]: value,
+                },
             };
 
             fetch(targetUrl + '/ctrl', {
@@ -58,9 +72,16 @@ const CustomSlider: React.FC<Props> = (props: Props) => {
         { maxWait: 1000 },
     );
 
-    useEffect(() => {
-        debouncedFunction(slidy);
-    }, [slidy]);
+    const onChange = (value: number | string | undefined) => {
+        if (typeof value === 'number') {
+            debouncedFunction(value);
+            setInputValue(value);
+        }
+    };
+
+    // useEffect(() => {
+    //     debouncedFunction(inputValue);
+    // }, [inputValue]);
 
     return (
         <>
@@ -68,19 +89,24 @@ const CustomSlider: React.FC<Props> = (props: Props) => {
             <Row justify="space-between" align="middle">
                 <Col xs={24} lg={12} xl={8}>
                     <div>
-                        Min: {props.min} - Value: {slidy} - Max: {props.max} - Name: {props.name}
+                        Min: {props.min} - Value: {inputValue} - Max: {props.max} - Name: {props.name}
                     </div>
+                </Col>
+                <Col span={4}>
+                    <InputNumber
+                        min={props.min}
+                        max={props.max}
+                        style={{ margin: '0 16px' }}
+                        value={inputValue}
+                        onChange={onChange}
+                    />
                 </Col>
                 <Col xs={24} lg={12} xl={16}>
                     <Slider
                         min={props.min}
                         max={props.max}
-                        onChange={(v: number) => {
-                            if (typeof v === 'number') {
-                                setSlidy(v);
-                            }
-                        }}
-                        value={slidy}
+                        onChange={onChange}
+                        value={typeof inputValue === 'number' ? inputValue : 0}
                         step={(props.max - props.min) / 1000}
                     />
                 </Col>

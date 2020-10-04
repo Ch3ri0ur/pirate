@@ -9,6 +9,7 @@ import VideoStream from '../components/Janus/VideoStream';
 import SettingsModal from '../components/SettingsModal/SettingsModal';
 import useFetch from '../util/useFetch';
 import { createStore, useStore } from 'react-hookstore';
+import SliderList from '../components/Slider/SliderList';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -49,18 +50,9 @@ const MyContent: React.FC<Props> = (props: Props) => {
         console.log('Received values of form: ', values);
         setModalVisible(false);
     }
-    let sliderList;
-    const config = data;
+
     // TODO check for bool/ string and handle accordingly
-    if (config) {
-        sliderList = Object.entries(config?.arduinosend_config).map(([k, v]) => {
-            return (
-                <CustomSlider key={v.name} index={k} min={v.min} max={v.max} name={v.name} startvalue={v.default}>
-                    {v.name}
-                </CustomSlider>
-            );
-        });
-    }
+
     // TODO later create tests / encapsulate some functionality to enable tests
     // TODO style better
     // TODO create subcomponents
@@ -73,7 +65,7 @@ const MyContent: React.FC<Props> = (props: Props) => {
             <Row>
                 <Col xs={24} md={12} xl={16}>
                     <div style={{ margin: 8 }}>
-                        {sliderList}
+                        {data ? <SliderList config={data}></SliderList> : <p>no configuration data</p>}
                         <Button
                             type="primary"
                             onClick={() => {
