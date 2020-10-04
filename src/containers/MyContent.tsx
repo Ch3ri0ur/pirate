@@ -72,7 +72,7 @@ const MyContent: React.FC<Props> = (props: Props) => {
                                 setModalVisible(true);
                             }}
                         >
-                            New Collection
+                            Config Options
                         </Button>
                     </div>
                 </Col>

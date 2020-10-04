@@ -224,7 +224,7 @@ const VideoStream = (props: Props) => {
                     {haveSession ? (
                         <video style={{ width: '100%' }} id="remotevideo" ref={videoPlayerRef} autoPlay playsInline />
                     ) : (
-                        <div className="w-2/3 h-2/3 object-cover m-auto">
+                        <div>
                             <p>No Connection</p>
                         </div>
                     )}

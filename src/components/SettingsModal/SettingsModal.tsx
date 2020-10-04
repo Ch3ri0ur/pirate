@@ -87,29 +87,29 @@ const SettingsModal: React.FC<CollectionCreateFormProps> = ({
                 initialValues={{ modifier: 'public' }}
                 validateMessages={validateMessages}
             >
-                <Form.Item name="title" label="Title">
+                {/* <Form.Item name="title" label="Title">
                     <Input />
-                </Form.Item>
+                </Form.Item> */}
                 <Form.Item
                     name="maxpoints"
-                    label="Maximum of Points in Graph"
+                    label="Maximum Number of Timestamps"
                     initialValue={chartDataMaxPoints}
                     rules={[{ type: 'number', min: 0, max: 5000 }]}
                 >
                     <InputNumber />
                 </Form.Item>
-                <Form.Item name="checkbox-group" label="Checkbox.Group" initialValue={graphShowList}>
+                <Form.Item name="checkbox-group" label="Which Series should be enabled?" initialValue={graphShowList}>
                     <Checkbox.Group>{checkBoxList}</Checkbox.Group>
                 </Form.Item>
-                <Form.Item name="description" label="Description">
+                {/* <Form.Item name="description" label="Description">
                     <Input type="textarea" />
-                </Form.Item>
-                <Form.Item name="modifier" className="{classes.collection-create-form_last-form-item}">
+                </Form.Item> */}
+                {/* <Form.Item name="modifier" className="{classes.collection-create-form_last-form-item}">
                     <Radio.Group>
                         <Radio value="public">Public</Radio>
                         <Radio value="private">Private</Radio>
                     </Radio.Group>
-                </Form.Item>
+                </Form.Item> */}
             </Form>
         </Modal>
     );

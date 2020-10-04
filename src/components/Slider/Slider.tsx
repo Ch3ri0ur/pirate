@@ -89,7 +89,7 @@ const CustomSlider: React.FC<Props> = (props: Props) => {
             <Row justify="space-between" align="middle">
                 <Col xs={24} lg={12} xl={8}>
                     <div>
-                        Min: {props.min} - Value: {inputValue} - Max: {props.max} - Name: {props.name}
+                        Name: {props.name} - Min: {props.min} - Value: {inputValue} - Max: {props.max} -
                     </div>
                 </Col>
                 <Col span={4}>
