@@ -35,6 +35,7 @@ interface CollectionCreateFormProps {
 }
 
 // TODO create options to move enabled graphs to another scale ( radio buttons behind the checkmarks? for two scales?)
+// TODO sync the show buttons / array and the clicking directly under the graph
 
 const SettingsModal: React.FC<CollectionCreateFormProps> = ({
     visible,

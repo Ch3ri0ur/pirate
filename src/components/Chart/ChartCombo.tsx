@@ -14,7 +14,7 @@ const canvasStyle = {
 
 // TODO what units on the two scales?
 // TODO set scaling better so as to not clip the scales
-// TODO imporve timescale and create generic scales/make settable
+// TODO improve timescale and create generic scales/make settable
 
 let opts: uPlot.Options = {
     title: 'Control Graph',
@@ -131,6 +131,7 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
         chartDataMaxPoints = chartDataMaxPointsRef;
         console.log('changing global');
     }, [chartDataMaxPointsRef]);
+
     useEffect(() => {
         console.log('configuseEffect');
         const series = [{}];
@@ -181,6 +182,7 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
         return () => {};
     }, [props.config]);
 
+    // TODO sync show behavior with settings
     useEffect(() => {
         opts.series.forEach((v, k) => {
             if (v?.label) {
@@ -238,7 +240,6 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
         };
     }, [referenceToCanvasElement]);
 
-    // TODO put duplicate in function
     const dataHandler = () => {
         // for (const data of globalChartDataQueue) {
         // console.log(globalChartDataQueue.length);
@@ -250,6 +251,7 @@ const ChartCombo: React.FC<Props> = (props: Props) => {
 
             // }
         } else {
+            // TODO slice global chart data queue if longer than max graph points
             const workload = globalChartDataQueue.slice(0, globalChartDataQueue.length / 2);
             globalChartDataQueue = globalChartDataQueue.slice(globalChartDataQueue.length / 2);
             for (const [id, data] of Object.entries(workload)) {
@@ -348,9 +350,9 @@ const exportToJson = () => {
     const items = globalPauseData;
     const replacer = (value: any) => (value === null ? '' : value); // specify how you want to handle null values here
     const header = graphNames;
-    const tanspose = (m: any) => m[0].map((x: any, i: any) => m.map((x: any) => replacer(x[i])));
+    const transpose = (m: any) => m[0].map((x: any, i: any) => m.map((x: any) => replacer(x[i])));
 
-    const array = tanspose(globalPauseData);
+    const array = transpose(globalPauseData);
 
     array.unshift(header);
 
